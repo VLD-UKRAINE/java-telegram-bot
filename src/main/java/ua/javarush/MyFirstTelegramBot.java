@@ -1,5 +1,8 @@
 package ua.javarush;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -27,7 +30,20 @@ public class MyFirstTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "6757623299:AAEbIAJbw0nr3M2x_xCHRrqKUTYJkDUtBy0";
+        Properties properties = new Properties();
+
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                logger.error("Не вдалося знайти файл конфігурації!");
+                throw new RuntimeException("Не вдалося знайти файл конфігурації!");
+            }
+            properties.load(input);
+            return properties.getProperty("BOT_TOKEN");
+
+        } catch (IOException e) {
+            logger.error("Помилка при читанні конфігурації бота", e);
+            throw new RuntimeException("Неможливо отримати токен бота", e);
+        }
     }
 
     @Override
