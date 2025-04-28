@@ -3,3 +3,4 @@
 /.idea/
 .env
 /src/main/resources/config.properties
+/logs/
